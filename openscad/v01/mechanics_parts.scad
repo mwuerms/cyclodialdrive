@@ -107,57 +107,20 @@ module bldc5010_motor(show = 1, loc_res = 32) {
     }
 }
 
-module flycat2204_rotor_cut(loc_res = 32) {
-    // M2 holes rotor
-    for(n=[0:1:3])
-        translate([6*cos(n*90+45), 6*sin(n*90+45), 2.5])
-        cylinder(d = 2.2, h = 20, $fn = loc_res);
-}
+module bldc5010_magnet_holder_5mm_v1_0(loc_res = 32) {
+    difference() {
+        translate([0, 0, 0])
+        cylinder(d = 6, h = 4, $fn = loc_res);
 
-module flycat2204_rotor_cut_m2x6mm(loc_res = 32) {
-    // M2 holes rotor
-    for(n=[0:1:3])
-        translate([6*cos(n*90+45), 6*sin(n*90+45), 0])
-        m2x6mm_cut();
-}
+        // magnet dia 4 x 2mm 
+        translate([0, 0, -1])
+        cylinder(d = 4.1, h = 4, $fn = loc_res);
 
-module flycat2204_stator_cut(loc_res = 32) {
-    // M2.5 holes stator
-    for(n=[0:1:3])
-    translate([6*cos(n*90+45), 6*sin(n*90+45), -5])
-    cylinder(d = 2.2, h = 3.5+5, $fn = loc_res);
-}
-
-module flycat2204(loc_res = 32) {
-    origin();
-    color("Gray") {
-        difference() {
-            union() {
-                // base
-                translate([0, 0, 0])
-                cylinder(d = 28, h = 3.4, $fn = loc_res);
-                // rotor
-                translate([0, 0, 3.5])
-                cylinder(d = 28, h = 13-3.5, $fn = loc_res);
-            }
-            hull() {
-                translate([6+2, +(6-2), -0.5])
-                cylinder(r = 2, h = 1, $fn = loc_res);
-                translate([6+2+6, +(6-2), -0.5])
-                cylinder(r = 2, h = 1, $fn = loc_res);
-                translate([6+2+6, -(6-2), -0.5])
-                cylinder(r = 2, h = 1, $fn = loc_res);
-                translate([6+2, -(6-2), -0.5])
-                cylinder(r = 2, h = 1, $fn = loc_res);
-            }
-            translate([0, 0, -1])
-            cylinder(d = 3.5, h = 13+2, $fn = loc_res);
-
-            flycat2204_rotor_cut();
-            flycat2204_stator_cut();
-        }
+        // axis, 4 mm
+        translate([0, 0, -1])
+        cylinder(d = 4.1, h = 10, $fn = loc_res);
     }
 }
 
+
 //bldc5010_motor();
-//flycat2204();
