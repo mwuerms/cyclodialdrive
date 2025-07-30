@@ -26,3 +26,14 @@ edited files using Inkscape:
 + ![cyclodisc01a.svg](cyclodisc01a.svg)
 + ![cyclodisc01adisc.svg](cyclodisc01adisc.svg)
 + ![cyclodisc01acut.svg](cyclodisc01acut.svg)
+
+## cyclodisc01b.dxf
+
+settings ![cyclodisc01b](cyclodisc01b_2025-07-30_14-55-12.png)
+
+edited files using Inkscape:
+
++ ![cyclodisc01b.svg](cyclodisc01b.svg)
++ ![cyclodisc01bdisc.svg](cyclodisc01bdisc.svg)
++ ![cyclodisc01bcut.svg](cyclodisc01bcut.svg)
+

@@ -47,17 +47,21 @@ module input_shaft_spacer1(ax_wid = 7, col = "LightSalmon", loc_res = 32) {
 module input_shaft_spacer2(ax_wid = 7, col = "LightSalmon", loc_res = 32) {
 }
 
-module cyclodial_disc(th = 4) {
-    // use images/cyclodisc01a.svg, get size in mm: [Ctrl] + D
-    xsize = 51.54071;
-    ysize = 51.82741;
-    translate([-xsize/2, -ysize/2, 0])
+module cyclodial_disc1(th = 4, loc_res = 32) {
+    // use images/cyclodisc01b.svg, get size in mm: [Ctrl] + D
+    excentricity = 1.0;
+    xsize = 52.53282;
+    ysize = 52.80275;
+    translate([-xsize/2+excentricity, -ysize/2, 0])
     difference() {
-        linear_extrude(height= 4)
-        import (file = "images/cyclodisc01adisc.svg");
+        linear_extrude(height= th)
+        import (file = "images/cyclodisc01bdisc.svg");
         translate([0, 0, -1])
-        linear_extrude(height = 6)
-        import (file = "images/cyclodisc01acut.svg");
+        linear_extrude(height = th+2)
+        import (file = "images/cyclodisc01bcut.svg");
+        // correction: should be 15 mm center bore
+        translate([0, 0, -1])
+        cylinder(d = 15, h = th+2, $fn = loc_res);
     }
 }
 
@@ -76,7 +80,7 @@ module outer_rolers(outer_dia = 55, roler_dia = 4, nb_roler = 16, th = 4, loc_re
 
 module puttogether(loc_res = 32) {
     // 5010 BLDC motor
-    translate([0, 0, 0])
+    *translate([0, 0, 0])
     bldc5010_motor(show = 0, loc_res = 2*loc_res);
     translate([0, 0, -4.5])
     bldc5010_magnet_holder_5mm_v1_0(loc_res = loc_res);
@@ -89,10 +93,10 @@ module puttogether(loc_res = 32) {
         input_shaft_spacer1(loc_res = loc_res);
     
         translate([0, 0, 8])
-        //cyclodial_disc();
+        cyclodial_disc1();
+        *translate([0, 0, 9])
         cylinder(d = 15, h = 4, $fn = loc_res);
-        translate([1, 0, 9])
-        //cyclodial_disc();
+        *translate([1, 0, 10])
         cylinder(d = 13, h = 4, $fn = loc_res);
         
         translate([0, 0, 8])
@@ -112,3 +116,4 @@ puttogether();
 *input_shaft_spacer2(loc_res = 128); // 4x
 
 *bldc5010_magnet_holder_5mm_v1_0(loc_res = 128); // 1 x
+*cyclodial_disc1(); // 1 x
