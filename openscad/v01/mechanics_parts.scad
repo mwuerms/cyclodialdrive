@@ -41,6 +41,19 @@ module bldc5010_m3cut_rotor(show = 1, len = 10, loc_res = 32) {
     }
 }
 
+module bldc5010_m3cut_rotor2(show = 1, len = 10, loc_res = 32) {
+    if(show) {
+        origin();
+    }
+    r1 = (15+9.6)/2/2;
+    for(n=[0:1:1]) {
+        translate([r1*cos(n*180), r1*sin(n*180), 0]) {
+            rotate([180, 0, 0])
+            m3_cut(len = len, loc_res = loc_res);
+        }
+    }
+}
+
 module bldc5010_m3cut_stator(show = 1, len = 10, loc_res = 32) {
     if(show) {
         origin();

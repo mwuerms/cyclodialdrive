@@ -23,9 +23,31 @@ module input_shaft_hub(ax_wid = 7, col = "LightCoral", loc_res = 32) {
             translate([-ax_wid/2, -ax_wid/2, 0])
             cube([ax_wid, ax_wid, 20]);
         }        
-            translate([0, 0, 2])
-            bldc5010_m3cut_rotor(show = 0, len = 4, loc_res = loc_res);
+        translate([0, 0, 2])
+        bldc5010_m3cut_rotor(show = 0, len = 2, loc_res = loc_res);
+        translate([0, 0, -1])
+        cylinder(d = 4.1, h = 4.8, $fn = loc_res);
+    }
+}
+
+module input_shaft_hub1a(ax_wid = 7, col = "LightCoral", loc_res = 32) {
+    color(col)
+    difference() {
+        union() {
+            translate([0, 0, 0])
+            cylinder(d = 19.7, h = 4, $fn = loc_res);
+            translate([-ax_wid/2, -ax_wid/2, 0])
+            cube([ax_wid, ax_wid, 20]);
+        }        
+        translate([0, 0, 2])
+        bldc5010_m3cut_rotor2(show = 0, len = 2, loc_res = loc_res);
+        translate([0, 0, -1])
+        cylinder(d = 4.1, h = 4.8, $fn = loc_res);
         
+        translate([-20/2, -20/2, -1])
+        cube([20, (20-ax_wid)/2, 6]);
+        translate([-20/2, (ax_wid)/2, -1])
+        cube([20, (20-ax_wid)/2, 6]);
     }
 }
 
@@ -49,6 +71,28 @@ module input_shaft_disc1(ax_wid = 7.2, th = 4, col = "LightSalmon", loc_res = 32
         cylinder(d = 1, h = th+2, $fn = loc_res);
         translate([+ax_wid/2, +ax_wid/2, -1])
         cylinder(d = 1, h = th+2, $fn = loc_res);
+    }
+}
+
+module input_shaft_disc1a(ax_wid = 7.2, th = 8, col = "LightSalmon", loc_res = 32) {
+    color(col)
+    difference() {
+        union() {
+            translate([0, 0, 0])
+            cylinder(d = 19.7, h = th, $fn = loc_res);
+        }        
+        translate([-ax_wid/2, -ax_wid/2, -1])
+        cube([ax_wid, ax_wid, th+2]);
+        translate([-ax_wid/2, -ax_wid/2, -1])
+        cylinder(d = 1, h = th+2, $fn = loc_res);
+        translate([-ax_wid/2, +ax_wid/2, -1])
+        cylinder(d = 1, h = th+2, $fn = loc_res);
+        translate([+ax_wid/2, -ax_wid/2, -1])
+        cylinder(d = 1, h = th+2, $fn = loc_res);
+        translate([+ax_wid/2, +ax_wid/2, -1])
+        cylinder(d = 1, h = th+2, $fn = loc_res);
+        translate([-20/2, -7.2/2, -1])
+        cube([20, 7.2, 4+1]);
     }
 }
 
@@ -172,9 +216,6 @@ module puttogether(loc_res = 32) {
         translate([0, 0, 16])
         input_shaft_disc1(loc_res = loc_res);
         
-        
-        
-        
         translate([0, 0, 0])
         outer_case(loc_res = loc_res);
         
@@ -193,9 +234,13 @@ module puttogether(loc_res = 32) {
 // print
 *input_shaft_hub(loc_res = 128); // 1x
 *input_shaft_disc1(loc_res = 128); // 2x
-input_shaft_disc2(loc_res = 128); // 2x
+*input_shaft_disc2(loc_res = 128); // 2x
 
 *bldc5010_magnet_holder_5mm_v1_0(loc_res = 128); // 1 x
 *cyclodial_disc1(loc_res = 128); // 2 x
 *outer_case(loc_res = 128); // 1 x
 *output_disc(loc_res = 128); // 2 x
+
+input_shaft_hub1a(loc_res = 128); // 1x
+translate([0, 0, 1])
+input_shaft_disc1a(loc_res = 128); // 1x
