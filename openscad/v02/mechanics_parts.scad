@@ -135,5 +135,40 @@ module bldc5010_magnet_holder_5mm_v1_0(loc_res = 32) {
     }
 }
 
+module ballbearing(odia = 20, idia = 10, th = 4, edge = 3, col = "Silver", loc_res = 32) {
+    color(col)
+    difference() {
+        translate([0, 0, 0])
+        cylinder(d = odia, h = th, $fn = loc_res);
+        translate([0, 0, -1])
+        cylinder(d = odia-edge, h = th+2, $fn = loc_res);
+    }
+    color(col)
+    difference() {
+        translate([0, 0, 0])
+        cylinder(d = idia+edge, h = th, $fn = loc_res);
+        translate([0, 0, -1])
+        cylinder(d = idia, h = th+2, $fn = loc_res);
+    }
+    color("DimGray")
+    difference() {
+        translate([0, 0, 0.1])
+        cylinder(d = odia-edge, h = th-0.2, $fn = loc_res);
+        translate([0, 0, -1])
+        cylinder(d = idia+edge, h = th+2, $fn = loc_res);
+    }
+}
+
+module ballbearing18x12x4(loc_res = 32) {
+    ballbearing(odia = 18, idia = 12, th = 4, edge = 2, loc_res = loc_res);
+}
+
+module ballbearing27x20x4(loc_res = 32) {
+    ballbearing(odia = 27, idia = 20, th = 4, edge = 2, loc_res = loc_res);
+}
+
+module ballbearing55x45x6(loc_res = 32) {
+    ballbearing(odia = 55, idia = 45, th = 6, edge = 3, loc_res = loc_res);
+}
 
 //bldc5010_motor();
