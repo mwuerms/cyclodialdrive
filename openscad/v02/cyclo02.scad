@@ -118,11 +118,8 @@ module inner_roller_bearing(loc_res = 32) {
     roller_bearing(h1 = 2*4+2*5, h2 = 4, h3 = 2*5, loc_res = loc_res);
 }
 
-module inner_rolers(outer_dia = 35, roler_dia = 4, nb_roler = 8, th = 4, loc_res = 32) {
-    // output rollers
-    for(n = [0: 1: (nb_roler-1)])
-    translate([outer_dia/2 * cos(n * 360/nb_roler), outer_dia/2 * sin(n * 360/nb_roler), 0])
-    cylinder(d = roler_dia, h = th, $fn = loc_res);
+module outer_roller_bearing(loc_res = 32) {
+    roller_bearing(h1 = 2*4+2*5, h2 = 4, h3 = 2*5, loc_res = loc_res);
 }
 
 module output_disc1(show_bearings = 1, col = "LightCyan", loc_res = 32) {
@@ -206,6 +203,86 @@ module output_disc2(col = "LightBlue", loc_res = 32) {
     }    
 }
 
+module outer_roller_bearings(outer_dia = 60, nb_roler = 16, loc_res = 32) {
+    // output rollers
+    for(n = [0: 1: (nb_roler-1)])
+    translate([outer_dia/2 * cos(n * 360/nb_roler), outer_dia/2 * sin(n * 360/nb_roler), 0])
+    outer_roller_bearing(loc_res = loc_res);
+}
+
+module outer_roller_bearings_cut(outer_dia = 60, nb_roler = 16, loc_res = 32) {
+    // output rollers
+    for(n = [0: 1: (nb_roler-1)])
+    translate([outer_dia/2 * cos(n * 360/nb_roler), outer_dia/2 * sin(n * 360/nb_roler), 0]) {
+        translate([0, 0, -1])
+        cylinder(d = 1, h = (2*4+2*5)+2, $fn = loc_res);
+        translate([0, 0, -0.1])
+        cylinder(d = 3.1, h = (2*4+2*5)+0.2, $fn = loc_res);
+        translate([0, 0, 3.9])
+        cylinder(d = 5.2, h = (2*5)+0.2, $fn = loc_res);
+    }
+}
+
+module outer_case_top(col = "LightSeaGreen", loc_res = 32) {
+    rad1 = 34.0;
+    nb_screws = 8;
+    color(col)
+    difference() {
+        union() {
+            translate([0, 0, 0])
+            cylinder(d = 70, h = 3.5, $fn = loc_res);
+            for(n = [0:1:nb_screws-1])
+            translate([rad1*cos(n*360/nb_screws+360/32), rad1*sin(n*360/nb_screws+360/32), 0]) {
+                cylinder(d = 8, h = 3.5, $fn = loc_res);
+            }
+        }
+        translate([0, 0, -1])
+        cylinder(d = 55, h = 3.5, $fn = loc_res);
+        translate([0, 0, -1])
+        cylinder(d = 55-1, h = 5.5, $fn = loc_res);
+    
+        for(n = [0:1:nb_screws-1])
+        translate([rad1*cos(n*360/nb_screws+360/32), rad1*sin(n*360/nb_screws+360/32), 0]) {
+            translate([0, 0, 1.5])
+            rotate([180, 0, 0])
+            m3_cut(loc_res = loc_res);
+        }
+        
+        // look inside
+        *translate([0, 0, -1])
+        cube(45);
+    }
+}
+module outer_case_middle(col = "LightGreen", loc_res = 32) {
+    rad1 = 34.0;
+    nb_screws = 8;
+    color(col)
+    difference() {
+        union() {
+            translate([0, 0, 0])
+            cylinder(d = 70, h = 20.5, $fn = loc_res);
+            for(n = [0:1:nb_screws-1])
+            translate([rad1*cos(n*360/nb_screws+360/32), rad1*sin(n*360/nb_screws+360/32), 0]) {
+                cylinder(d = 8, h = 20.5, $fn = loc_res);
+            }
+        }
+        // cut middle hole
+        translate([0, 0, -1])
+        cylinder(d = 55, h = 22, $fn = loc_res);
+        // cut space for rollers
+        translate([0, 0, 6.4])
+        cylinder(d = 66, h = 10.2, $fn = loc_res);
+        // cut roller mounting holes
+        translate([0, 0, 2.5])
+        outer_roller_bearings_cut(loc_res = loc_res);
+        
+        // look inside
+        *translate([0, 0, -1])
+        cube(45);
+    }
+}
+
+
 module puttogether(loc_res = 32) {
     // 5010 BLDC motor
     *translate([0, 0, 0])
@@ -218,13 +295,13 @@ module puttogether(loc_res = 32) {
         *translate([0, 0, 1])
         ballbearing27x20x4();
                 
-        *translate([0, 0, -1])
+        translate([0, 0, -1])
         ballbearing55x45x6();
         *translate([0, 0, 1])
         output_disc1(show_bearings = 1, loc_res = loc_res);
         
         // 6 mm square input shaft
-        translate([0, 0, 0])
+        *translate([0, 0, 0])
         input_shaft_hub(loc_res = loc_res);
         
         // 1st cycloidal disc with ball bearing
@@ -252,24 +329,39 @@ module puttogether(loc_res = 32) {
         cyclodial_disc1(loc_res = loc_res);
         
         // on top: final two ball bearings + output disc
-        translate([0, 0, 16])
+        *translate([0, 0, 16])
         ballbearing27x20x4();
-        translate([0, 0, 16])
+        *translate([0, 0, 16])
         input_shaft_disc2(loc_res = loc_res);
         
         translate([0, 0, 16])
         ballbearing55x45x6();
-        translate([0, 0, 16])
+        *translate([0, 0, 16])
         output_disc2(loc_res = loc_res);
+        
+        // outer case
+        *translate([0, 0, 1.5])
+        outer_roller_bearings(loc_res = loc_res);
+        
+        *translate([0, 0, 19.5])
+        outer_case_top(loc_res = loc_res);
+        
+        translate([0, 0, -1])
+        outer_case_middle(loc_res = loc_res);
     }
 }
 
 // show
+difference() {
 puttogether();
-
+// look inside
+        translate([0, 0, -1])
+        cube(60);
+}
 // print
 *output_disc1(show_bearings = 0, loc_res = 128); // 1 x
 *input_shaft_hub(loc_res = 128); // 1 x
 *input_shaft_disc1(loc_res = 128); // 4 x
 *input_shaft_disc2(loc_res = 128); // 1 x
 *output_disc2(loc_res = 128); // 1 x
+*outer_case_top(loc_res = 128); // 1 x
