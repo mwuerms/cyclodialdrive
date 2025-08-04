@@ -57,12 +57,14 @@ module input_shaft_disc1(ax_wid = 6.1, th = 1.95, col = "LightSalmon", loc_res =
     }
 }
 
-module input_shaft_disc2(ax_wid = 7.2, th = 4, col = "LightCyan", loc_res = 32) {
+module input_shaft_disc2(ax_wid = 6.1, th = 4, col = "LightCyan", loc_res = 32) {
     color(col)
     difference() {
         union() {
-            translate([1, 0, 0])
-            cylinder(d = 14.7, h = th, $fn = loc_res);
+            translate([0, 0, 0])
+            cylinder(d = 20.0, h = th, $fn = loc_res);
+            translate([0, 0, -0.5])
+            cylinder(d = 21.0, h = 0.5, $fn = loc_res);
         }        
         translate([-ax_wid/2, -ax_wid/2, -1])
         cube([ax_wid, ax_wid, th+2]);
@@ -97,6 +99,9 @@ module cyclodial_disc1(th = 4, col = "LightSteelBlue", loc_res = 32) {
         // cut 18.0 mm center hole
         translate([0, 0, -1])
         cylinder(d = 18.0, h = th+2, $fn = loc_res);
+        // orientation: little dent
+        translate([-25, 0, th-0.4])
+        cylinder(d = 1, h = 1, $fn = loc_res);
     }
 }
 
@@ -118,33 +123,6 @@ module inner_rolers(outer_dia = 35, roler_dia = 4, nb_roler = 8, th = 4, loc_res
     for(n = [0: 1: (nb_roler-1)])
     translate([outer_dia/2 * cos(n * 360/nb_roler), outer_dia/2 * sin(n * 360/nb_roler), 0])
     cylinder(d = roler_dia, h = th, $fn = loc_res);
-}
-
-module output_disc(outer_dia = 35, th1 = 4, col = "LightBlue", loc_res = 32) {
-    color(col)
-    union() {
-        difference() {
-            union() {
-                translate([0, 0, 0])
-                cylinder(d = outer_dia+6, h = th1, $fn = loc_res);
-            }
-            translate([0, 0, -1])
-            cylinder(d = 20, h = th1+2, $fn = loc_res);
-            translate([0, 0, -1])
-            inner_rolers(th = th1+2);
-        }
-        
-    }
-}
-
-module outer_rolers(outer_dia = 55, roler_dia = 4, nb_roler = 16, th = 4, loc_res = 32) {
-    for(n = [0: 1: (nb_roler-1)])
-    translate([outer_dia/2 * cos(n * 360/nb_roler), outer_dia/2 * sin(n * 360/nb_roler), 0])
-    cylinder(d = roler_dia, h = th, $fn = loc_res);
-}
-
-module outer_case(outer_dia = 55, th1 = 20, th2 = 4, col = "LightGreen", loc_res = 32) {
-
 }
 
 module output_disc1(show_bearings = 1, col = "LightCyan", loc_res = 32) {
@@ -188,6 +166,46 @@ module output_disc1(show_bearings = 1, col = "LightCyan", loc_res = 32) {
     }    
 }
 
+module output_disc2(col = "LightBlue", loc_res = 32) {
+    odia = 45;
+    idia = 27;
+    th = 4;
+    th1 = 0.5;
+    th2 = 6+1;
+    color(col)
+    difference() {
+        union() {
+            difference() {
+                translate([0, 0, -th1])
+                cylinder(d = odia+1, h = th1, $fn = loc_res);
+                translate([0, 0, -1])
+                cylinder(d = idia, h = th1+2, $fn = loc_res);
+            }
+            
+            difference() {
+                translate([0, 0, 0])
+                cylinder(d = odia, h = th2, $fn = loc_res);
+                translate([0, 0, -1])
+                cylinder(d = idia, h = th+1, $fn = loc_res);
+                translate([0, 0, -1])
+                cylinder(d = idia-1, h = th+1.5, $fn = loc_res);
+            }
+            
+        }
+        rad_out = 38.4/2;
+        for(n = [0:1:7])
+        translate([rad_out*cos(360/8*n), rad_out*sin(360/8*n), 0]) {
+            translate([0, 0, -1])
+            cylinder(d = 3.2, h = th+0.6, $fn = loc_res);
+            translate([0, 0, th-1])
+            cylinder(d = 1, h = th, $fn = loc_res);
+        }
+        // look inside
+        *translate([0, 0, -1])
+        cube(45);
+    }    
+}
+
 module puttogether(loc_res = 32) {
     // 5010 BLDC motor
     *translate([0, 0, 0])
@@ -196,36 +214,53 @@ module puttogether(loc_res = 32) {
     bldc5010_magnet_holder_5mm_v1_0(loc_res = loc_res);
     
     translate([0, 0, 19]) {
+        // from below: two ball bearings + output disc
+        *translate([0, 0, 1])
+        ballbearing27x20x4();
+                
         *translate([0, 0, -1])
         ballbearing55x45x6();
         *translate([0, 0, 1])
-        ballbearing27x20x4();
-        
-        *translate([0, 0, 1])
         output_disc1(show_bearings = 1, loc_res = loc_res);
         
+        // 6 mm square input shaft
         translate([0, 0, 0])
         input_shaft_hub(loc_res = loc_res);
         
-        translate([1, 0, 6])
+        // 1st cycloidal disc with ball bearing
+        *translate([1, 0, 6])
         ballbearing18x12x4();
-        translate([1, 0, 5.5])
+        *translate([1, 0, 5.5])
         rotate([0, 0, 0])
         input_shaft_disc1(loc_res = loc_res);
-        translate([1, 0, 10.5])
+        *translate([1, 0, 10.5])
         rotate([180, 0, 0])
         input_shaft_disc1(loc_res = loc_res);
+        *translate([0, 0, 6])
+        cyclodial_disc1(loc_res = loc_res);
         
-        
-        
-        translate([-1, 0, 11])
+        // 2nd cycloidal disc with ball bearing
+        *translate([-1, 0, 11])
         ballbearing18x12x4();
-        translate([-1, 0, 10.5])
+        *translate([-1, 0, 10.5])
         rotate([0, 0, 180])
         input_shaft_disc1(loc_res = loc_res);
-        translate([-1, 0, 15.5])
+        *translate([-1, 0, 15.5])
         rotate([180, 0, 180])
         input_shaft_disc1(loc_res = loc_res);
+        *translate([-2, 0, 11])
+        cyclodial_disc1(loc_res = loc_res);
+        
+        // on top: final two ball bearings + output disc
+        translate([0, 0, 16])
+        ballbearing27x20x4();
+        translate([0, 0, 16])
+        input_shaft_disc2(loc_res = loc_res);
+        
+        translate([0, 0, 16])
+        ballbearing55x45x6();
+        translate([0, 0, 16])
+        output_disc2(loc_res = loc_res);
     }
 }
 
@@ -233,15 +268,8 @@ module puttogether(loc_res = 32) {
 puttogether();
 
 // print
-*input_shaft_hub(loc_res = 128); // 1x
-*input_shaft_disc1(loc_res = 128); // 2x
-*input_shaft_disc2(loc_res = 128); // 2x
-
-*bldc5010_magnet_holder_5mm_v1_0(loc_res = 128); // 1 x
-*cyclodial_disc1(loc_res = 128); // 2 x
-*outer_case(loc_res = 128); // 1 x
-*output_disc(loc_res = 128); // 2 x
-
-*input_shaft_hub1a(loc_res = 128); // 1x
-*translate([0, 0, 1])
-*input_shaft_disc1a(loc_res = 128); // 1x
+*output_disc1(show_bearings = 0, loc_res = 128); // 1 x
+*input_shaft_hub(loc_res = 128); // 1 x
+*input_shaft_disc1(loc_res = 128); // 4 x
+*input_shaft_disc2(loc_res = 128); // 1 x
+*output_disc2(loc_res = 128); // 1 x
