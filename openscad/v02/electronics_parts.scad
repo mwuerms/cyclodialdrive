@@ -128,6 +128,26 @@ module pcbAS5600_pcb_cut(pcb_th = 2, loc_res = 32) {
     }
 }
 
+module pcbAS5600_pcb_cut2(pcb_th = 2, loc_res = 32) {
+    a = (23+1)/2;
+    r1 = 3;
+    hull() {
+        translate([+(a-r1), +(a-r1), 0])
+        cylinder(r = r1, h = pcb_th, $fn = loc_res);
+        translate([+(a-r1), -(a-r1), 0])
+        cylinder(r = r1, h = pcb_th, $fn = loc_res);
+        translate([-(a-r1), +(a-r1), 0])
+        cylinder(r = r1, h = pcb_th, $fn = loc_res);
+        translate([-(a-r1), -(a-r1), 0])
+        cylinder(r = r1, h = pcb_th, $fn = loc_res);
+    }
+    translate([-10/2, -24/2, 0])
+    cube([10, 24, 3]);
+    translate([-24/2, -10/2, 0])
+    cube([24, 10, 3]);
+}
+pcbAS5600_pcb_cut2();
+
 module pcbAS5600(loc_res = 32) {
     difference() {
         union() {

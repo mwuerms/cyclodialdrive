@@ -258,12 +258,13 @@ module outer_case_middle(col = "LightGreen", loc_res = 32) {
     nb_screws = 8;
     color(col)
     difference() {
+        translate([0, 0, 6.5])
         union() {
             translate([0, 0, 0])
-            cylinder(d = 70, h = 20.5, $fn = loc_res);
+            cylinder(d = 70, h = 14, $fn = loc_res);
             for(n = [0:1:nb_screws-1])
             translate([rad1*cos(n*360/nb_screws+360/32), rad1*sin(n*360/nb_screws+360/32), 0]) {
-                cylinder(d = 8, h = 20.5, $fn = loc_res);
+                cylinder(d = 8, h = 14, $fn = loc_res);
             }
         }
         // cut middle hole
@@ -282,10 +283,84 @@ module outer_case_middle(col = "LightGreen", loc_res = 32) {
     }
 }
 
+module outer_case_bottom(col = "MediumSpringGreen", loc_res = 32) {
+    rad1 = 34.0;
+    nb_screws = 8;
+    color(col)
+    
+    difference() {
+        union() {
+            translate([0, 0, 18]) {
+                hull() {
+                    translate([0, 0, 0])
+                    cylinder(d = 70, h = 6.5, $fn = loc_res);
+                    translate([0, 0, -5])
+                    cylinder(d = 60, h = 6.5, $fn = loc_res);
+                }
+                for(n = [0:1:nb_screws-1])
+                translate([rad1*cos(n*360/nb_screws+360/32), rad1*sin(n*360/nb_screws+360/32), 0]) {
+                cylinder(d = 8, h = 6.5, $fn = loc_res);
+                }
+            }
+            // main body
+            translate([0, 0, -5])
+            cylinder(d = 60, h = 19+4, $fn = loc_res);
+            // on bottom motor + sensor mount
+            hull() {
+                translate([0, 0, -6])
+                cylinder(d = 60, h = 6, $fn = loc_res);
+                translate([0, 0, -8])
+                cylinder(d = 56, h = 7, $fn = loc_res);
+            }
+        }
+        // cut ballbearing hole
+        translate([0, 0, 18])
+        cylinder(d = 55, h = 18, $fn = loc_res);
+        // cut roller mounting holes
+        translate([0, 0, 18+2.6])
+        outer_roller_bearings_cut(loc_res = loc_res);
+        // cut motor hole
+        translate([0, 0, 0])
+        cylinder(d = 53, h = 19+1, $fn = loc_res);
+        // cut for cables
+        hull() {
+            translate([0, 0, 3])
+            rotate([0, 90, 45]) {
+                translate([0, -3, 0])
+                cylinder(d = 4, h = 40, $fn = loc_res);
+                translate([0, +3, 0])
+                cylinder(d = 4, h = 40, $fn = loc_res);
+            }
+        }
+        // cut center hole for spindle/magnet
+        translate([0, 0, -10])
+        cylinder(d = 10, h = 19+1, $fn = loc_res);
+        // cut motor mount
+        translate([0, 0, -4])
+        bldc5010_m3cut_stator();
+        // cut sensor mount
+        translate([0, 0, -9])
+        pcbAS5600_mount_holes_cut(cut_dia = 2.5, loc_res = loc_res);
+        translate([0, 0, -8.6])
+        pcbAS5600_pcb_cut2();
+        // sensor cable cut
+        translate([0, 0, -7])
+        rotate([0, 90, 90])
+        hull() {
+            translate([0, 0, 0])
+            cylinder(d = 3.5, h = 40, $fn = loc_res);
+            translate([2, 0, 0])
+            cylinder(d = 3.5, h = 40, $fn = loc_res);
+        }
+        // look inside
+        *translate([0, 0, -1])
+        cube(45);
+    }
+}
 
 module puttogether(loc_res = 32) {
     // 5010 BLDC motor
-    *translate([0, 0, 0])
+    translate([0, 0, 0])
     bldc5010_motor(show = 0, loc_res = 2*loc_res);
     translate([0, 0, -4.5])
     bldc5010_magnet_holder_5mm_v1_0(loc_res = loc_res);
@@ -336,27 +411,28 @@ module puttogether(loc_res = 32) {
         
         translate([0, 0, 16])
         ballbearing55x45x6();
-        *translate([0, 0, 16])
+        translate([0, 0, 16])
         output_disc2(loc_res = loc_res);
         
         // outer case
         *translate([0, 0, 1.5])
         outer_roller_bearings(loc_res = loc_res);
-        
-        *translate([0, 0, 19.5])
+        translate([0, 0, 19.5])
         outer_case_top(loc_res = loc_res);
-        
         translate([0, 0, -1])
         outer_case_middle(loc_res = loc_res);
+        translate([0, 0, -19])
+        outer_case_bottom(col = "Red", loc_res = loc_res);
+        
     }
 }
 
 // show
 difference() {
-puttogether();
-// look inside
-        translate([0, 0, -1])
-        cube(60);
+    puttogether();
+    // look inside
+    *translate([-60, 0, -10])
+    cube(60);
 }
 // print
 *output_disc1(show_bearings = 0, loc_res = 128); // 1 x
@@ -365,3 +441,5 @@ puttogether();
 *input_shaft_disc2(loc_res = 128); // 1 x
 *output_disc2(loc_res = 128); // 1 x
 *outer_case_top(loc_res = 128); // 1 x
+*outer_case_middle(loc_res = 128); // 1 x
+*outer_case_bottom(loc_res = 128); // 1 x
