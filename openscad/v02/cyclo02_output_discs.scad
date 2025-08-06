@@ -98,3 +98,5 @@ module output_disc2(col = "LightBlue", loc_res = 32) {
         cube(45);
     }    
 }
+
+output_disc2();

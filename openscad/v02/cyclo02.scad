@@ -27,46 +27,46 @@ module puttogether(loc_res = 32) {
     
     translate([0, 0, 19]) {
         // from below: two ball bearings + output disc
-        translate([0, 0, 1])
+        *translate([0, 0, 1])
         ballbearing27x20x4();
                 
-        translate([0, 0, -1])
+        *translate([0, 0, -1])
         ballbearing55x45x6();
-        translate([0, 0, 1])
+        *translate([0, 0, 1])
         output_disc1(show_bearings = 1, loc_res = loc_res);
         
         // 6 mm square input shaft
-        translate([0, 0, 0])
+        *translate([0, 0, 0])
         input_shaft_hub(loc_res = loc_res);
         
         // 1st cycloidal disc with ball bearing
-        translate([1, 0, 6])
+        *translate([1, 0, 6])
         ballbearing18x12x4();
-        translate([1, 0, 5.5])
+        *translate([1, 0, 5.5])
         rotate([0, 0, 0])
         input_shaft_disc1(loc_res = loc_res);
-        translate([1, 0, 10.5])
+        *translate([1, 0, 10.5])
         rotate([180, 0, 0])
         input_shaft_disc1(loc_res = loc_res);
-        translate([0, 0, 6])
+        *translate([0, 0, 6])
         cyclodial_disc1(loc_res = loc_res);
         
         // 2nd cycloidal disc with ball bearing
-        translate([-1, 0, 11])
+        *translate([-1, 0, 11])
         ballbearing18x12x4();
-        translate([-1, 0, 10.5])
+        *translate([-1, 0, 10.5])
         rotate([0, 0, 180])
         input_shaft_disc1(loc_res = loc_res);
-        translate([-1, 0, 15.5])
+        *translate([-1, 0, 15.5])
         rotate([180, 0, 180])
         input_shaft_disc1(loc_res = loc_res);
-        translate([-2, 0, 11])
+        *translate([-2, 0, 11])
         cyclodial_disc1(loc_res = loc_res);
         
         // on top: final two ball bearings + output disc
-        translate([0, 0, 16])
+        *translate([0, 0, 16])
         ballbearing27x20x4();
-        translate([0, 0, 16])
+        *translate([0, 0, 16])
         input_shaft_disc2(loc_res = loc_res);
         
         translate([0, 0, 16])
@@ -75,7 +75,7 @@ module puttogether(loc_res = 32) {
         output_disc2(loc_res = loc_res);
         
         // outer case
-        translate([0, 0, 1.5])
+        *translate([0, 0, 1.5])
         outer_roller_bearings(loc_res = loc_res);
         translate([0, 0, 19.5])
         outer_case_top(loc_res = loc_res);
@@ -84,6 +84,14 @@ module puttogether(loc_res = 32) {
         translate([0, 0, -19])
         outer_case_bottom(col = "Red", loc_res = loc_res);
         
+        // placeholder: connection hub at the bottom
+        *translate([0, 0, -30])
+        outer_case_connection_hub(loc_res = loc_res);
+        
+        // placeholder: connection hub at the side
+        translate([0, -35, -3])
+        rotate([90, 0, 0])
+        outer_case_connection_hub(loc_res = loc_res);
     }
 }
 
