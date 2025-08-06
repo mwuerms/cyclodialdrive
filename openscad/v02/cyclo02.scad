@@ -206,14 +206,14 @@ module output_disc2(col = "LightBlue", loc_res = 32) {
 module outer_roller_bearings(outer_dia = 60, nb_roler = 16, loc_res = 32) {
     // output rollers
     for(n = [0: 1: (nb_roler-1)])
-    translate([outer_dia/2 * cos(n * 360/nb_roler), outer_dia/2 * sin(n * 360/nb_roler), 0])
+    translate([outer_dia/2 * cos(n * 360/nb_roler+360/32), outer_dia/2 * sin(n * 360/nb_roler+360/32), 0])
     outer_roller_bearing(loc_res = loc_res);
 }
 
 module outer_roller_bearings_cut(outer_dia = 60, nb_roler = 16, loc_res = 32) {
     // output rollers
     for(n = [0: 1: (nb_roler-1)])
-    translate([outer_dia/2 * cos(n * 360/nb_roler), outer_dia/2 * sin(n * 360/nb_roler), 0]) {
+    translate([outer_dia/2 * cos(n * 360/nb_roler+360/32), outer_dia/2 * sin(n * 360/nb_roler+360/32), 0]) {
         translate([0, 0, -1])
         cylinder(d = 1, h = (2*4+2*5)+2, $fn = loc_res);
         translate([0, 0, -0.1])
@@ -232,7 +232,7 @@ module outer_case_top(col = "LightSeaGreen", loc_res = 32) {
             translate([0, 0, 0])
             cylinder(d = 70, h = 3.5, $fn = loc_res);
             for(n = [0:1:nb_screws-1])
-            translate([rad1*cos(n*360/nb_screws+360/32), rad1*sin(n*360/nb_screws+360/32), 0]) {
+            translate([rad1*cos(n*360/nb_screws), rad1*sin(n*360/nb_screws), 0]) {
                 cylinder(d = 8, h = 3.5, $fn = loc_res);
             }
         }
@@ -242,7 +242,7 @@ module outer_case_top(col = "LightSeaGreen", loc_res = 32) {
         cylinder(d = 55-1, h = 5.5, $fn = loc_res);
     
         for(n = [0:1:nb_screws-1])
-        translate([rad1*cos(n*360/nb_screws+360/32), rad1*sin(n*360/nb_screws+360/32), 0]) {
+        translate([rad1*cos(n*360/nb_screws), rad1*sin(n*360/nb_screws), 0]) {
             translate([0, 0, 1.5])
             rotate([180, 0, 0])
             m3_cut(loc_res = loc_res);
@@ -253,6 +253,7 @@ module outer_case_top(col = "LightSeaGreen", loc_res = 32) {
         cube(45);
     }
 }
+
 module outer_case_middle(col = "LightGreen", loc_res = 32) {
     rad1 = 34.0;
     nb_screws = 8;
@@ -263,7 +264,7 @@ module outer_case_middle(col = "LightGreen", loc_res = 32) {
             translate([0, 0, 0])
             cylinder(d = 70, h = 14, $fn = loc_res);
             for(n = [0:1:nb_screws-1])
-            translate([rad1*cos(n*360/nb_screws+360/32), rad1*sin(n*360/nb_screws+360/32), 0]) {
+            translate([rad1*cos(n*360/nb_screws), rad1*sin(n*360/nb_screws), 0]) {
                 cylinder(d = 8, h = 14, $fn = loc_res);
             }
         }
@@ -276,6 +277,12 @@ module outer_case_middle(col = "LightGreen", loc_res = 32) {
         // cut roller mounting holes
         translate([0, 0, 2.5])
         outer_roller_bearings_cut(loc_res = loc_res);
+        
+        // m3 holes
+        for(n = [0:1:nb_screws-1])
+        translate([rad1*cos(n*360/nb_screws), rad1*sin(n*360/nb_screws), 5]) {
+            m3_cut(len = 30, loc_res = loc_res);
+        }
         
         // look inside
         *translate([0, 0, -1])
@@ -298,7 +305,7 @@ module outer_case_bottom(col = "MediumSpringGreen", loc_res = 32) {
                     cylinder(d = 60, h = 6.5, $fn = loc_res);
                 }
                 for(n = [0:1:nb_screws-1])
-                translate([rad1*cos(n*360/nb_screws+360/32), rad1*sin(n*360/nb_screws+360/32), 0]) {
+                translate([rad1*cos(n*360/nb_screws), rad1*sin(n*360/nb_screws), 0]) {
                 cylinder(d = 8, h = 6.5, $fn = loc_res);
                 }
             }
@@ -352,6 +359,15 @@ module outer_case_bottom(col = "MediumSpringGreen", loc_res = 32) {
             translate([2, 0, 0])
             cylinder(d = 3.5, h = 40, $fn = loc_res);
         }
+        
+        // m3 holes + nuts
+        for(n = [0:1:nb_screws-1])
+        translate([rad1*cos(n*360/nb_screws), rad1*sin(n*360/nb_screws), 5]) {
+            translate([0, 0, 14])
+            rotate([180, 0, n*360/nb_screws+90])
+            m3_nut_and_bolt_cut(m3_bolt_and_nut_distance = 10, m3_nut_len = 6, len = 30, loc_res = loc_res);
+        }
+        
         // look inside
         *translate([0, 0, -1])
         cube(45);
@@ -360,9 +376,9 @@ module outer_case_bottom(col = "MediumSpringGreen", loc_res = 32) {
 
 module puttogether(loc_res = 32) {
     // 5010 BLDC motor
-    translate([0, 0, 0])
+    *translate([0, 0, 0])
     bldc5010_motor(show = 0, loc_res = 2*loc_res);
-    translate([0, 0, -4.5])
+    *translate([0, 0, -4.5])
     bldc5010_magnet_holder_5mm_v1_0(loc_res = loc_res);
     
     translate([0, 0, 19]) {
@@ -370,7 +386,7 @@ module puttogether(loc_res = 32) {
         *translate([0, 0, 1])
         ballbearing27x20x4();
                 
-        translate([0, 0, -1])
+        *translate([0, 0, -1])
         ballbearing55x45x6();
         *translate([0, 0, 1])
         output_disc1(show_bearings = 1, loc_res = loc_res);
@@ -428,10 +444,10 @@ module puttogether(loc_res = 32) {
 }
 
 // show
-difference() {
+*difference() {
     puttogether();
     // look inside
-    *translate([-60, 0, -10])
+    translate([-60, 0, -10])
     cube(60);
 }
 // print
@@ -442,4 +458,4 @@ difference() {
 *output_disc2(loc_res = 128); // 1 x
 *outer_case_top(loc_res = 128); // 1 x
 *outer_case_middle(loc_res = 128); // 1 x
-*outer_case_bottom(loc_res = 128); // 1 x
+outer_case_bottom(loc_res = 128); // 1 x
