@@ -171,4 +171,12 @@ module ballbearing55x45x6(loc_res = 32) {
     ballbearing(odia = 55, idia = 45, th = 6, edge = 3, loc_res = loc_res);
 }
 
+module roller_bearing(dia1 = 3, dia2 = 5, h1 = 4*5, h2 = 5, h3 = 2*5, loc_res = 32) {
+    color("Silver")
+    translate([0, 0, 0])
+    cylinder(d = dia1, h = h1, $fn = loc_res);
+    color("PaleGoldenrod")
+    translate([0, 0, h2])
+    cylinder(d = dia2, h = h3, $fn = loc_res);
+}
 //bldc5010_motor();
