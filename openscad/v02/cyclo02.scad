@@ -89,19 +89,21 @@ module puttogether(loc_res = 32) {
         outer_case_connection_hub(loc_res = loc_res);
         
         // placeholder: connection hub at the side
-        translate([0, -35, -3])
+        *translate([0, -35, -3])
         rotate([90, 0, 0])
         outer_case_connection_hub(loc_res = loc_res);
     }
 }
 
 // show
+puttogether();
+/*
 difference() {
     puttogether();
     // look inside
     translate([-60, 0, -10])
     cube(60);
-}
+}*/
 // print
 *output_disc1(show_bearings = 0, loc_res = 128); // 1 x
 *input_shaft_hub(loc_res = 128); // 1 x
