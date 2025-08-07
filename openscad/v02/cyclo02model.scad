@@ -30,7 +30,7 @@ module cyclo02modelA(loc_res = 64) {
     }
     // A longer output disc
     translate([0, 0, 49])
-    cylinder(d = 45, h = 2, $fn = loc_res); 
+    cylinder(d = 45, h = 1, $fn = loc_res); 
     rad1 = 34.0;
     nb_screws = 8;
     for(n = [0:1:nb_screws-1])
@@ -60,7 +60,7 @@ module cyclo02modelB(loc_res = 64) {
     }
     // output disc
     translate([0, 0, 49])
-    cylinder(d = 45, h = 1, $fn = loc_res); 
+    cylinder(d = 45, h = 2, $fn = loc_res); 
     rad1 = 34.0;
     nb_screws = 8;
     for(n = [0:1:nb_screws-1])
@@ -74,16 +74,180 @@ module cyclo02modelB(loc_res = 64) {
 }
 *cyclo02modelB();
 
+module joint01(loc_res = 64) {
+    translate([0, -50, 0])
+    rotate([-90, 0, 0])
+    cyclo02modelA(loc_res = loc_res);
+    translate([-25, 40, 0])
+    rotate([0, 90, 0])
+    cyclo02modelB(loc_res = loc_res);
 
+    translate([26, 40, 0])
+    rotate([0, 90, 0])
+    cyclo02modelA(loc_res = loc_res);
+}
+module joint02(loc_res = 64) {
+    rotate([0, 180, 0])
+    joint01(loc_res = loc_res);
+}
+module joint03(loc_res = 64) {
+    rotate([0, 180, 180])
+    joint01(loc_res = loc_res);
+}
+module joint04(loc_res = 64) {
+    rotate([0, 0, 180])
+    joint01(loc_res = loc_res);
+}
 
-// put together
-translate([0, -50, 0])
-rotate([-90, 0, 0])
-cyclo02modelA();
-translate([-25, 40, 0])
-rotate([0, 90, 0])
-cyclo02modelB();
+/*
+translate([50, 100, 0])
+joint01();
+translate([-50, 100, 0])
+joint02();
+translate([50, -100, 0])
+joint03();
+translate([-50, -100, 0])
+joint04();
+*/
 
-translate([28, 40, 0])
-rotate([0, 90, 0])
-cyclo02modelA();
+module leg01(loc_res = 64) {
+    joint01(loc_res = loc_res);
+    hull() {
+        translate([52, 40, 0])
+        rotate([0, 90, 0])
+        cylinder(d = 70, h = 30, $fn = loc_res);
+        translate([52+30, 40, 0])
+        rotate([0, 90, 0])
+        cylinder(d = 60, h = 5, $fn = loc_res);
+        
+        translate([52, 240, -50])
+        rotate([0, 90, 0])
+        cylinder(d = 40, h = 30, $fn = loc_res);
+        translate([52+30, 240, -50])
+        rotate([0, 90, 0])
+        cylinder(d = 30, h = 5, $fn = loc_res);
+    }
+    hull() {
+        translate([52, 240, -50])
+        rotate([0, 90, 0])
+        cylinder(d = 40, h = 30, $fn = loc_res);
+        translate([52+30, 240, -50])
+        rotate([0, 90, 0])
+        cylinder(d = 30, h = 5, $fn = loc_res);
+        
+        translate([52, 40, -100])
+        rotate([0, 90, 0])
+        cylinder(d = 20, h = 30, $fn = loc_res);
+        translate([52+30, 40, -100])
+        rotate([0, 90, 0])
+        cylinder(d = 10, h = 5, $fn = loc_res);
+    }
+}
+module leg02(loc_res = 64) {
+    joint02(loc_res = loc_res);
+    hull() {
+        translate([-(52+30), 40, 0])
+        rotate([0, 90, 0])
+        cylinder(d = 70, h = 30, $fn = loc_res);
+        translate([-(52+35), 40, 0])
+        rotate([0, 90, 0])
+        cylinder(d = 60, h = 5, $fn = loc_res);
+        
+        translate([-(52+30), 240, -50])
+        rotate([0, 90, 0])
+        cylinder(d = 40, h = 30, $fn = loc_res);
+        translate([-(52+35), 240, -50])
+        rotate([0, 90, 0])
+        cylinder(d = 30, h = 5, $fn = loc_res);
+    }
+    hull() {
+        translate([-(52+30), 240, -50])
+        rotate([0, 90, 0])
+        cylinder(d = 40, h = 30, $fn = loc_res);
+        translate([-(52+35), 240, -50])
+        rotate([0, 90, 0])
+        cylinder(d = 30, h = 5, $fn = loc_res);
+        
+        translate([-(52+30), 40, -100])
+        rotate([0, 90, 0])
+        cylinder(d = 20, h = 30, $fn = loc_res);
+        translate([-(52+35), 40, -100])
+        rotate([0, 90, 0])
+        cylinder(d = 10, h = 5, $fn = loc_res);
+    }
+}
+module leg03(loc_res = 64) {
+    joint03(loc_res = loc_res);
+    hull() {
+        translate([52, 40-80, 0])
+        rotate([0, 90, 0])
+        cylinder(d = 70, h = 30, $fn = loc_res);
+        translate([52+30, 40-80, 0])
+        rotate([0, 90, 0])
+        cylinder(d = 60, h = 5, $fn = loc_res);
+        
+        translate([52, 240-80, -50])
+        rotate([0, 90, 0])
+        cylinder(d = 40, h = 30, $fn = loc_res);
+        translate([52+30, 240-80, -50])
+        rotate([0, 90, 0])
+        cylinder(d = 30, h = 5, $fn = loc_res);
+    }
+    hull() {
+        translate([52, 240-80, -50])
+        rotate([0, 90, 0])
+        cylinder(d = 40, h = 30, $fn = loc_res);
+        translate([52+30, 240-80, -50])
+        rotate([0, 90, 0])
+        cylinder(d = 30, h = 5, $fn = loc_res);
+        
+        translate([52, 40-80, -100])
+        rotate([0, 90, 0])
+        cylinder(d = 20, h = 30, $fn = loc_res);
+        translate([52+30, 40-80, -100])
+        rotate([0, 90, 0])
+        cylinder(d = 10, h = 5, $fn = loc_res);
+    }
+}
+module leg04(loc_res = 64) {
+    joint04(loc_res = loc_res);
+    hull() {
+        translate([-(52+30), 40-80, 0])
+        rotate([0, 90, 0])
+        cylinder(d = 70, h = 30, $fn = loc_res);
+        translate([-(52+35), 40-80, 0])
+        rotate([0, 90, 0])
+        cylinder(d = 60, h = 5, $fn = loc_res);
+        
+        translate([-(52+30), 240-80, -50])
+        rotate([0, 90, 0])
+        cylinder(d = 40, h = 30, $fn = loc_res);
+        translate([-(52+35), 240-80, -50])
+        rotate([0, 90, 0])
+        cylinder(d = 30, h = 5, $fn = loc_res);
+    }
+    hull() {
+        translate([-(52+30), 240-80, -50])
+        rotate([0, 90, 0])
+        cylinder(d = 40, h = 30, $fn = loc_res);
+        translate([-(52+35), 240-80, -50])
+        rotate([0, 90, 0])
+        cylinder(d = 30, h = 5, $fn = loc_res);
+        
+        translate([-(52+30), 40-80, -100])
+        rotate([0, 90, 0])
+        cylinder(d = 20, h = 30, $fn = loc_res);
+        translate([-(52+35), 40-80, -100])
+        rotate([0, 90, 0])
+        cylinder(d = 10, h = 5, $fn = loc_res);
+    }
+}
+
+translate([50, 100, 0])
+leg01();
+translate([-50, 100, 0])
+leg02();
+translate([50, -100, 0])
+leg03();
+translate([-50, -100, 0])
+leg04();
