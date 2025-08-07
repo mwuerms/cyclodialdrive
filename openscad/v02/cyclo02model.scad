@@ -243,11 +243,22 @@ module leg04(loc_res = 64) {
     }
 }
 
-translate([50, 100, 0])
-leg01();
-translate([-50, 100, 0])
-leg02();
-translate([50, -100, 0])
-leg03();
-translate([-50, -100, 0])
-leg04();
+module model01(loc_res = 64) {
+    translate([50, 100, 0])
+    leg01(loc_res = loc_res);
+    translate([-50, 100, 0])
+    leg02(loc_res = loc_res);
+    translate([50, -100, 0])
+    leg03(loc_res = loc_res);
+    translate([-50, -100, 0])
+    leg04(loc_res = loc_res);
+    hull() {
+        translate([-50, 90, 0])
+        rotate([90, 0, 0])
+        cylinder(d = 80, h = 180, $fn = loc_res);
+        translate([+50, 90, 0])
+        rotate([90, 0, 0])
+        cylinder(d = 80, h = 180, $fn = loc_res);
+    }
+}
+model01();
